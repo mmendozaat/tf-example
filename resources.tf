@@ -67,46 +67,43 @@ resource "aws_sqs_queue" "queue-b2" {
   visibility_timeout_seconds  = 900
 }
 
-resource "aws_sns_topic" "sns-alarm-topic" {
-  name = "sns-out"
+resource "aws_kms_key" "sns_key" {
+  description = "sns key"
+  policy      = data.aws_iam_policy_document.cloudwatch_kms.json
 }
 
-resource "aws_cloudwatch_metric_alarm" "sqs-queue-alarm" {
-  for_each        = var.pipeline-queues
-  actions_enabled = true
-  alarm_actions = [
-    data.aws_sns_topic.sns-alarm-topic.arn,
-  ]
-  alarm_name          = "${each.key}-empty-queue"
-  comparison_operator = "LessThanThreshold"
-  datapoints_to_alarm = 1
-  evaluation_periods  = 1
-  threshold           = 1
-  treat_missing_data  = "missing"
+module "snsq" {
+  source          = "./sns"
+  sns_name_suffix = "q"
+}
 
-  dynamic "metric_query" {
-    for_each = each.value
+module "snsa" {
+  source          = "./sns"
+  sns_name_suffix = "a"
+}
 
-    content {
-      id          = "m${metric_query.key}"
-      return_data = false
+module "snsb" {
+  source          = "./sns"
+  sns_name_suffix = "b"
+}
 
-      metric {
-        dimensions = {
-          "QueueName" = metric_query.value
-        }
-        metric_name = "NumberOfMessagesDeleted"
-        namespace   = "AWS/SQS"
-        period      = 300
-        stat        = "Maximum"
-      }
-    }
-  }
+module "cloudwatchq" {
+  source        = "./cloudwatch"
+  queues        = ["q1.fifo", "q2.fifo"]
+  pipeline      = "q"
+  sns_topic_arn = module.snsq.topic_arn
+}
 
-  metric_query {
-    expression  = "SUM(METRICS())"
-    id          = "e1"
-    label       = "EmptyQueue"
-    return_data = true
-  }
+module "cloudwatcha" {
+  source        = "./cloudwatch"
+  queues        = ["a1.fifo", "a2.fifo"]
+  pipeline      = "a"
+  sns_topic_arn = module.snsa.topic_arn
+}
+
+module "cloudwatchb" {
+  source        = "./cloudwatch"
+  queues        = ["b1.fifo", "b2.fifo"]
+  pipeline      = "b"
+  sns_topic_arn = module.snsb.topic_arn
 }
