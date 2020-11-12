@@ -75,16 +75,19 @@ resource "aws_kms_key" "sns_key" {
 module "snsq" {
   source          = "./sns"
   sns_name_suffix = "q"
+  sns_key_id = aws_kms_key.sns_key.key_id
 }
 
 module "snsa" {
   source          = "./sns"
   sns_name_suffix = "a"
+  sns_key_id = aws_kms_key.sns_key.key_id
 }
 
 module "snsb" {
   source          = "./sns"
   sns_name_suffix = "b"
+  sns_key_id = aws_kms_key.sns_key.key_id
 }
 
 module "cloudwatchq" {
