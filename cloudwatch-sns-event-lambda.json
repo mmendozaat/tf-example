@@ -1,0 +1,29 @@
+{
+    "records": [
+        {
+            "sns": {
+                "messageAttributes": {},
+                "signingCertUrl": "https://sns.us-east-1.amazonaws.com/SimpleNotificationService-a86cb10b4e1f29c941702d737128f7b6.pem",
+                "messageId": "c1f0c389-02bb-5feb-a811-9ba00dc8746e",
+                "message": "{\"AlarmName\":\"q-empty-queue\",\"AlarmDescription\":null,\"AWSAccountId\":\"600913924980\",\"NewStateValue\":\"ALARM\",\"NewStateReason\":\"Threshold Crossed: 1 out of the last 1 datapoints [0.0 (13/11/20 22:43:00)] was less than the threshold (1.0) (minimum 1 datapoint for OK -> ALARM transition).\",\"StateChangeTime\":\"2020-11-13T22:48:19.059+0000\",\"Region\":\"US East (N. Virginia)\",\"AlarmArn\":\"arn:aws:cloudwatch:us-east-1:600913924980:alarm:q-empty-queue\",\"OldStateValue\":\"OK\",\"Trigger\":{\"Period\":300,\"EvaluationPeriods\":1,\"ComparisonOperator\":\"LessThanThreshold\",\"Threshold\":1.0,\"TreatMissingData\":\"- TreatMissingData:                    missing\",\"EvaluateLowSampleCountPercentile\":\"\",\"Metrics\":[{\"Id\":\"m0\",\"MetricStat\":{\"Metric\":{\"Dimensions\":[{\"value\":\"q1.fifo\",\"name\":\"QueueName\"}],\"MetricName\":\"NumberOfMessagesDeleted\",\"Namespace\":\"AWS/SQS\"},\"Period\":300,\"Stat\":\"Maximum\"},\"ReturnData\":false},{\"Expression\":\"SUM(METRICS())\",\"Id\":\"e1\",\"Label\":\"EmptyQueue\",\"ReturnData\":true},{\"Id\":\"m1\",\"MetricStat\":{\"Metric\":{\"Dimensions\":[{\"value\":\"q2.fifo\",\"name\":\"QueueName\"}],\"MetricName\":\"NumberOfMessagesDeleted\",\"Namespace\":\"AWS/SQS\"},\"Period\":300,\"Stat\":\"Maximum\"},\"ReturnData\":false}]}}",
+                "subject": "ALARM: \"q-empty-queue\" in US East (N. Virginia)",
+                "unsubscribeUrl": "https://sns.us-east-1.amazonaws.com/?Action=Unsubscribe&SubscriptionArn=arn:aws:sns:us-east-1:600913924980:sns-out-q:f8c954d8-b1d2-45cb-9647-ec994d26f348",
+                "type": "Notification",
+                "signatureVersion": "1",
+                "signature": "HWCNXXNI5JOplzBtzjjvos/XfQ7I5duXqy+skb3eVjkb+9mxaN99cNXkAvP7nkJ5nD6mHbu4F2aRqlZtFxTAPRM4LMCPB4J6NtojLMIlmnwsaN+vMHVGNXIFXuyAXNE05TiEPQBhR3KDfaDvBCElO70U1IJjogzQHBjG5QS/egSu6TP6C5JY4YtELuTbWC0kxsMLfHhyKWa88JJfFQiop4wcjpZPZ9jk9t/z/UCq2drHq7urfUtxtFLMEroDURYyLXJnnllDVGfw149npYglEIbgvqflaYD3o3Wvw/Ny1yW9+GR2uOVGhMJXQ8OgvUeP9AlH1acAs972hvwEHea0gA==",
+                "timestamp": {
+                    "iMillis": 1605307699124,
+                    "iChronology": {
+                        "iBase": {
+                            "iMinDaysInFirstWeek": 4
+                        }
+                    }
+                },
+                "topicArn": "arn:aws:sns:us-east-1:600913924980:sns-out-q"
+            },
+            "eventVersion": "1.0",
+            "eventSource": "aws:sns",
+            "eventSubscriptionArn": "arn:aws:sns:us-east-1:600913924980:sns-out-q:f8c954d8-b1d2-45cb-9647-ec994d26f348"
+        }
+    ]
+}
