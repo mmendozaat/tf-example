@@ -75,19 +75,19 @@ resource "aws_kms_key" "sns_key" {
 module "snsq" {
   source          = "./sns"
   sns_name_suffix = "q"
-  sns_key_id = aws_kms_key.sns_key.key_id
+  sns_key_id      = aws_kms_key.sns_key.key_id
 }
 
 module "snsa" {
   source          = "./sns"
   sns_name_suffix = "a"
-  sns_key_id = aws_kms_key.sns_key.key_id
+  sns_key_id      = aws_kms_key.sns_key.key_id
 }
 
 module "snsb" {
   source          = "./sns"
   sns_name_suffix = "b"
-  sns_key_id = aws_kms_key.sns_key.key_id
+  sns_key_id      = aws_kms_key.sns_key.key_id
 }
 
 module "cloudwatchq" {
@@ -109,4 +109,49 @@ module "cloudwatchb" {
   queues        = ["b1.fifo", "b2.fifo"]
   pipeline      = "b"
   sns_topic_arn = module.snsb.topic_arn
+}
+
+resource "aws_glue_job" "ticker_analytics" {
+  connections = []
+  default_arguments = {
+    "--TempDir"             = "s3://aws-glue-temporary-600913924980-us-east-1/admin"
+    "--class"               = "GlueApp"
+    "--job-bookmark-option" = "job-bookmark-disable"
+    "--job-language"        = "scala"
+  }
+  glue_version              = "2.0"
+  max_retries               = 0
+  name                      = "ticker_analytics"
+  non_overridable_arguments = {}
+  number_of_workers         = 3
+  role_arn                  = "arn:aws:iam::600913924980:role/service-role/AWSGlueServiceRole-demo"
+  tags                      = {}
+  timeout                   = 2880
+
+  command {
+    name            = "glueetl"
+    python_version  = "3"
+    script_location = "s3://aws-glue-scripts-600913924980-us-east-1/admin/ticker_analytics"
+  }
+
+  execution_property {
+    max_concurrent_runs = 1
+  }
+}
+
+resource "aws_glue_trigger" "ta1" {
+  enabled = true
+  name    = "ta1"
+  tags    = {}
+  type    = "ON_DEMAND"
+
+  actions {
+    arguments = {
+      "--PARAM" = "1"
+    }
+    job_name = "ticker_analytics"
+    timeout  = 2880
+  }
+
+  timeouts {}
 }
